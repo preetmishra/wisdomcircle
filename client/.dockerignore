@@ -1,0 +1,13 @@
+# Ignore static .env, accept envs at runtime.
+.env
+.git/
+.gitignore
+.dockerignore
+.prettierrc
+README.md
+npm-debug.log
+test/
+package-lock.json
+Dockerfile
+public/
+tailwind.config.js

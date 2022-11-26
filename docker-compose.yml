@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+  wisdomcircle_client:
+    build:
+      context: ./client
+    container_name: wisdomcircle_client
+    ports:
+      - "29172:29172"
+    volumes:
+      - ./client:/app
+      - "/app/node_modules"
+    depends_on:
+      - wisdomcircle_server
+    command: npm run start
+
+  wisdomcircle_server:
+    build:
+      context: ./server
+    container_name: wisdomcircle_server
+    ports:
+      - "29171:3000"
+    volumes:
+      - ./server:/app
+      - "/app/node_modules"
+    depends_on:
+      - mongo
+    networks:
+      - wisdomcircle
+    command: npm run start:dev
+
+  mongo:
+    image: mongo:4.4-rc
+    container_name: wisdomcircle_mongo
+    volumes:
+      - mongodb:/data/db
+    ports:
+      - "29170:27017"
+    networks:
+      - wisdomcircle
+
+networks:
+  wisdomcircle:
+
+volumes:
+  mongodb:
+    driver: local
