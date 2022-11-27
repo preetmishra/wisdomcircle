@@ -2,11 +2,16 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import "react-phone-number-input/style.css";
-import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import { isValidPhoneNumber } from "react-phone-number-input";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import WelcomeScreen from "../WelcomeScreen";
 import Input, { Phone, Password } from "../../lib/Input";
 import Button from "../../lib/Button";
+import { API_URI } from "../../../common/constants";
+import { loginUser } from "../duck/actions";
 
 const registerSchema = yup
   .object({
@@ -37,8 +42,18 @@ export function Register() {
     resolver: yupResolver(registerSchema),
   });
 
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const handleOnSubmit = (payload) => {
-    console.log("SUBMIT", payload);
+    axios
+      .post(`${API_URI}/auth/register`, payload)
+      .then((res) => res.data)
+      .then((data) => {
+        dispatch(loginUser(data));
+        navigate("/");
+      })
+      .catch(console.error); // TODO: Handle all error states.
   };
 
   return (

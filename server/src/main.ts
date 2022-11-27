@@ -11,6 +11,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
+  // NOTE: Should be more restrictive in production.
+  app.enableCors();
+
   await app.listen(port);
   Logger.log(`Server is listening at ${port}`);
 }

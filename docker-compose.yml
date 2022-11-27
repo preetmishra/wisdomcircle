@@ -13,6 +13,8 @@ services:
     depends_on:
       - wisdomcircle_server
     command: npm run start
+    environment:
+      - REACT_APP_API
 
   wisdomcircle_server:
     build:
