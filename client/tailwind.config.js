@@ -7,7 +7,30 @@ module.exports = {
     fontFamily: {
       serif: ["Poppins", ...defaultTheme.fontFamily.serif],
     },
-    extend: {},
+    extend: {
+      colors: {
+        neutral: {
+          grey: "#404555",
+          black: "#121317",
+          divider: "#DCDEE5",
+          charcoal: "#606880",
+        },
+        accent: {
+          "royal-blue": {
+            4: "#2558E5",
+          },
+        },
+        primary: {
+          4: "#F1C12B",
+          5: "#CDA425",
+        },
+        system: {
+          danger: {
+            4: "#D92D20",
+          },
+        },
+      },
+    },
   },
   plugins: [],
 };

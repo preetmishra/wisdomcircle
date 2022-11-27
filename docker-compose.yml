@@ -19,7 +19,7 @@ services:
       context: ./server
     container_name: wisdomcircle_server
     ports:
-      - "29171:3000"
+      - "${API_SERVER_PORT}:${API_SERVER_PORT}"
     volumes:
       - ./server:/app
       - "/app/node_modules"
@@ -28,6 +28,10 @@ services:
     networks:
       - wisdomcircle
     command: npm run start:dev
+    environment:
+      - API_SERVER_PORT
+      - API_MONGODB_URI
+      - API_JWT_SECRET
 
   mongo:
     image: mongo:4.4-rc
@@ -35,7 +39,7 @@ services:
     volumes:
       - mongodb:/data/db
     ports:
-      - "29170:27017"
+      - "${MONGODB_PORT}:27017"
     networks:
       - wisdomcircle
 

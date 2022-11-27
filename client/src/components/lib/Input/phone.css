@@ -1,0 +1,25 @@
+.PhoneInput {
+  --PhoneInputCountryFlag-borderColor: transparent;
+  @apply h-12 flex justify-between
+    w-full space-x-2;
+}
+
+.PhoneInputCountry {
+  @apply rounded p-4 border h-full text-neutral-black border-neutral-divider;
+}
+
+.PhoneInput--focus .PhoneInputCountry {
+  @apply border-2 border-neutral-grey;
+}
+
+.PhoneInput--error .PhoneInputCountry {
+  @apply text-system-danger-4 border-system-danger-4 focus:border-system-danger-4;
+}
+
+.PhoneInputInput {
+  @apply appearance-none rounded px-4 py-3 placeholder:text-neutral-charcoal border focus:border-2 focus:outline-none h-full text-sm md:text-base focus:border-neutral-grey text-neutral-black border-neutral-divider;
+}
+
+.PhoneInput--error .PhoneInputInput {
+  @apply text-system-danger-4 border-system-danger-4 focus:border-system-danger-4;
+}

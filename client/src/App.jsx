@@ -1,5 +1,7 @@
+import Register from "./components/auth/Register";
+
 function App() {
-  return <div>Hello World</div>;
+  return <Register />;
 }
 
 export default App;
