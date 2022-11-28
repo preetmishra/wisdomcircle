@@ -125,7 +125,7 @@ export class AuthService {
     this.logger.verbose("Hashing the password");
     const hashedPassword = await this.generateHash(password);
 
-    const document = await this.create({
+    const authDocument = await this.create({
       email,
       phone,
       password: hashedPassword,
@@ -134,13 +134,13 @@ export class AuthService {
     });
 
     this.logger.verbose(
-      `Registered the user <_id: ${document._id}> successfully with phone and email in an unverified state`
+      `Registered the user <_id: ${authDocument._id}> successfully with phone and email in an unverified state`
     );
 
     return {
-      accessToken: this.generateAccessToken(document),
-      refreshToken: this.generateRefreshToken(document),
-      payload: this.getAuthPayload(document),
+      accessToken: this.generateAccessToken(authDocument),
+      refreshToken: this.generateRefreshToken(authDocument),
+      payload: this.getAuthPayload(authDocument),
     };
   }
 }
