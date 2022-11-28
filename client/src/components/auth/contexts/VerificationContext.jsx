@@ -46,6 +46,7 @@ export function VerificationContext({ children }) {
   const accessToken = useSelector((state) => state.auth.accessToken);
   const [showVerificationNotification, setVerificationNotification] =
     useState(true);
+  const [hasSentVerification, setHasSentVerification] = useState(false);
 
   // If not logged in or already verified, let them access the application.
   if (!_isLoggedIn || _isVerified) {
@@ -62,6 +63,28 @@ export function VerificationContext({ children }) {
       .then((res) => res.data)
       .then((data) => {
         dispatch(loginUser(data));
+      })
+      .catch(console.error); // TODO: Handle all error states.
+  };
+
+  const handleResendVerificationNotification = () => {
+    axios
+      .get(`${API_URI}/auth/verify/notify`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((res) => res.data)
+      .then((data) => {
+        if (data.success) {
+          setHasSentVerification(true);
+          // Allow re-sending after 60 seconds.
+          setTimeout(() => {
+            setHasSentVerification(false);
+          }, 60000);
+        } else {
+          throw new Error("Couldn't send verification notifications");
+        }
       })
       .catch(console.error); // TODO: Handle all error states.
   };
@@ -98,6 +121,23 @@ export function VerificationContext({ children }) {
                 placeholder="Phone Verification Code"
               />
             </div>
+            <p className="text-xs mt-4 mb-6">
+              <span>Didn't receive the verification code? </span>
+              <button
+                type="button"
+                className={`inline ${
+                  hasSentVerification
+                    ? "text-neutral-charcoal cursor-not-allowed"
+                    : "text-accent-royal-blue-4 cursor-pointer"
+                }`}
+                onClick={handleResendVerificationNotification}
+                disabled={hasSentVerification}
+              >
+                {hasSentVerification
+                  ? "Sent (wait for 60 seconds to resend)"
+                  : "Resend"}
+              </button>
+            </p>
             <div className="mt-6">
               <Button type="submit">Verify</Button>
             </div>

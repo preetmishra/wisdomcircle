@@ -21,12 +21,14 @@ import {
   PasswordIsIncorrect,
   PhoneAlreadyExists,
   PhoneIsNotRegistered,
+  UserIdDoesNotExist,
 } from "./errors";
 import { Auth, AuthDocument } from "./schemas/auth.schema";
 import {
   AccessTokenResponse,
   AuthUserPayload,
   LoginRegisterResponse,
+  VerificationNotificationResponse,
 } from "./types";
 
 @Injectable()
@@ -433,5 +435,33 @@ export class AuthService {
       refreshToken: this.generateRefreshToken(authDocument),
       user: this.getAuthUserPayload(authDocument),
     };
+  }
+
+  async sendVerificationNotification(
+    userId: string
+  ): Promise<VerificationNotificationResponse> {
+    this.logger.verbose("Attempting to send verification email and SMS");
+
+    this.logger.verbose(`Fetching the associated user for <_id: ${userId}>`);
+
+    const authDocument = await this.findOne({ _id: userId });
+
+    if (!authDocument) {
+      this.logger.error("Could not find any user for the given userId");
+      throw new UserIdDoesNotExist(
+        "Could not find any user for the given userId"
+      );
+    }
+
+    this.logger.verbose(
+      "Found a user with the given userId. Sending email and SMS"
+    );
+
+    await this.sendVerificationEmail(authDocument);
+    await this.sendVerificationSMS(authDocument);
+
+    this.logger.verbose("Sent successfully");
+
+    return { success: true };
   }
 }

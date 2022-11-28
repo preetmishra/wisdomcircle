@@ -10,3 +10,5 @@ export class InvalidRefreshToken extends Error {}
 
 export class InvalidEmailVerificationCode extends Error {}
 export class InvalidPhoneVerificationCode extends Error {}
+
+export class UserIdDoesNotExist extends Error {}

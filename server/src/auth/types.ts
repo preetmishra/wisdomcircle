@@ -19,3 +19,7 @@ export type LoginRegisterResponse = {
   refreshToken: string;
   user: AuthUserPayload;
 };
+
+export type VerificationNotificationResponse = {
+  success: boolean;
+};

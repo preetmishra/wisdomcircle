@@ -25,6 +25,7 @@ import {
   PasswordIsIncorrect,
   PhoneAlreadyExists,
   PhoneIsNotRegistered,
+  UserIdDoesNotExist,
 } from "./errors";
 import { UnverifiedJWTAuth, VerifiedJWTAuth } from "./guards";
 import {
@@ -105,6 +106,20 @@ export class AuthController {
         throw new BadRequestException(error.message);
       } else {
         throw error;
+      }
+    }
+  }
+
+  @UseGuards(UnverifiedJWTAuth)
+  @Get("/verify/notify")
+  async sendVerificationNotification(@User() user: AuthUserPayload) {
+    try {
+      return await this.authService.sendVerificationNotification(user._id);
+    } catch (error) {
+      if (error instanceof UserIdDoesNotExist) {
+        throw new BadRequestException(error.message);
+      } else {
+        throw Error;
       }
     }
   }
