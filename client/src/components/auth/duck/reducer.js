@@ -3,7 +3,7 @@ import { LOGIN_USER, LOGOUT_USER } from "./types";
 const INITIAL_STATE = {
   accessToken: localStorage.getItem("accessToken"),
   refreshToken: localStorage.getItem("refreshToken"),
-  user: JSON.parse(localStorage.getItem("user")),
+  user: JSON.parse(localStorage.getItem("user") || null),
 };
 
 const reducer = (state = INITIAL_STATE, action) => {

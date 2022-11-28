@@ -1,4 +1,4 @@
-export type AuthPayload = {
+export type AuthUserPayload = {
   _id: string;
   email: string;
   phone: string;
@@ -8,8 +8,8 @@ export type AuthPayload = {
   isEmailVerified: boolean;
 };
 
-export type RegisterResponse = {
+export type LoginRegisterResponse = {
   accessToken: string;
   refreshToken: string;
-  payload: AuthPayload;
+  user: AuthUserPayload;
 };

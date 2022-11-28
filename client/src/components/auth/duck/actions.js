@@ -3,7 +3,7 @@ import { LOGIN_USER, LOGOUT_USER } from "./types";
 export function loginUser(payload) {
   localStorage.setItem("accessToken", payload.accessToken);
   localStorage.setItem("refreshToken", payload.refreshToken);
-  localStorage.setItem("user", JSON.stringify(payload.payload));
+  localStorage.setItem("user", JSON.stringify(payload.user));
 
   return { type: LOGIN_USER, payload };
 }

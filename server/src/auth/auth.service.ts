@@ -3,15 +3,19 @@ import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
 import { compare, hash } from "bcrypt";
 import { Model } from "mongoose";
+import { LoginDto } from "./dto/login.dto";
 
 import { RegisterDto } from "./dto/register.dto";
 import {
   EmailAlreadyExists,
   EmailAndPhoneAlreadyExists,
+  EmailIsNotRegistered,
+  PasswordIsIncorrect,
   PhoneAlreadyExists,
+  PhoneIsNotRegistered,
 } from "./errors";
 import { Auth, AuthDocument } from "./schemas/auth.schema";
-import { RegisterResponse, AuthPayload } from "./types";
+import { AuthUserPayload, LoginRegisterResponse } from "./types";
 
 @Injectable()
 export class AuthService {
@@ -25,7 +29,14 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
 
-  private async findOne(filter: Record<string, any>): Promise<AuthDocument> {
+  private async findOne(
+    filter: Record<string, any>,
+    select: string | null = null
+  ): Promise<AuthDocument> {
+    if (select) {
+      return await this.authModel.findOne(filter).select(select);
+    }
+
     return await this.authModel.findOne(filter);
   }
 
@@ -47,7 +58,7 @@ export class AuthService {
     return await compare(plainText, hash);
   }
 
-  private getAuthPayload(authDocument: AuthDocument): AuthPayload {
+  private getAuthUserPayload(authDocument: AuthDocument): AuthUserPayload {
     return {
       _id: authDocument._id.toString(),
       email: authDocument.email,
@@ -61,7 +72,7 @@ export class AuthService {
 
   private generateAccessToken(authDocument: AuthDocument): string {
     const payload = {
-      ...this.getAuthPayload(authDocument),
+      ...this.getAuthUserPayload(authDocument),
       token: "access",
     };
 
@@ -107,11 +118,39 @@ export class AuthService {
     }
   }
 
+  private checkIfEmailOrPhone(emailOrPhone: string) {
+    const hasAnyLetter = (emailOrPhone: string): boolean => {
+      const regEx = /[a-zA-Z]/g;
+      return regEx.test(emailOrPhone);
+    };
+
+    const response = {
+      isEmail: false,
+      isPhone: false,
+    };
+
+    if (hasAnyLetter(emailOrPhone)) {
+      this.logger.verbose(
+        "emailOrPhone has an alphabet. Considering it as an email"
+      );
+
+      response.isEmail = true;
+    } else {
+      this.logger.verbose(
+        "emailOrPhone does not have an alphabet. Falling back to considering it as a phone"
+      );
+
+      response.isPhone = true;
+    }
+
+    return response;
+  }
+
   async verifyToken(token: string) {
     return this.jwtService.verify(token);
   }
 
-  async register(payload: RegisterDto): Promise<RegisterResponse> {
+  async register(payload: RegisterDto): Promise<LoginRegisterResponse> {
     const { email, phone, password, firstName, lastName } = payload;
 
     this.logger.verbose(
@@ -140,7 +179,70 @@ export class AuthService {
     return {
       accessToken: this.generateAccessToken(authDocument),
       refreshToken: this.generateRefreshToken(authDocument),
-      payload: this.getAuthPayload(authDocument),
+      user: this.getAuthUserPayload(authDocument),
+    };
+  }
+
+  async login(payload: LoginDto): Promise<LoginRegisterResponse> {
+    const { emailOrPhone, password } = payload;
+
+    this.logger.verbose(
+      `Attempting to login the user <emailOrPhone: ${emailOrPhone}, password: ${password}>`
+    );
+
+    this.logger.verbose("Checking whether we have an email or a phone");
+    const isEmailOrPhone = this.checkIfEmailOrPhone(emailOrPhone);
+
+    this.logger.verbose("Attempting to find an existing user");
+
+    const authDocument = await this.findOne(
+      {
+        ...(isEmailOrPhone.isEmail && { email: emailOrPhone }),
+        ...(isEmailOrPhone.isPhone && { phone: emailOrPhone }),
+      },
+      "+password"
+    );
+
+    if (!authDocument) {
+      this.logger.error(
+        `Could not find a user with <emailOrPhone: ${emailOrPhone}>`
+      );
+
+      if (isEmailOrPhone.isEmail) {
+        throw new EmailIsNotRegistered(
+          "Could not login. Email is not registered"
+        );
+      } else {
+        throw new PhoneIsNotRegistered(
+          "Could not login. Phone is not registered"
+        );
+      }
+    }
+
+    this.logger.verbose(
+      `Found an association between <emailOrPhone: ${emailOrPhone}> and a user <_id: ${authDocument._id}>`
+    );
+
+    this.logger.verbose("Verifying whether the password is correct");
+    const isPasswordCorrect = await this.verifyHash(
+      password,
+      authDocument.password
+    );
+
+    if (!isPasswordCorrect) {
+      this.logger.error("Password is incorrect");
+      throw new PasswordIsIncorrect("Could not login. Password is incorrect");
+    }
+    this.logger.verbose("Password is correct");
+
+    this.logger.verbose(
+      `Logged the user <_id: ${authDocument._id} in successfully`
+    );
+
+    return {
+      accessToken: this.generateAccessToken(authDocument),
+      refreshToken: this.generateRefreshToken(authDocument),
+      user: this.getAuthUserPayload(authDocument),
     };
   }
 }

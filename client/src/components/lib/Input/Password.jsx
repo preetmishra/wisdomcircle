@@ -23,9 +23,11 @@ export const Password = forwardRef((props, ref) => {
           {shouldShowPassword ? <VisibleOff /> : <Visible />}
         </button>
       </div>
-      <p className="text-xs text-neutral-grey mt-1.5">
-        Password must be at least 8 characters
-      </p>
+      {props.showHelpText && (
+        <p className="text-xs text-neutral-grey mt-1.5">
+          Password must be at least 8 characters
+        </p>
+      )}
     </div>
   );
 });

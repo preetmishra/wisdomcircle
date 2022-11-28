@@ -4,7 +4,7 @@ import * as yup from "yup";
 import "react-phone-number-input/style.css";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import WelcomeScreen from "../WelcomeScreen";
@@ -67,9 +67,12 @@ export function Register() {
             </h1>
             <h2 className="text-neutral-grey">
               Already have an account?{" "}
-              <button className="text-accent-royal-blue-4 font-semibold">
+              <Link
+                to="/login"
+                className="text-accent-royal-blue-4 font-semibold"
+              >
                 Sign In
-              </button>
+              </Link>
             </h2>
           </header>
           <form onSubmit={handleSubmit(handleOnSubmit)}>
@@ -94,6 +97,7 @@ export function Register() {
                 {...register("password")}
                 error={errors?.password}
                 placeholder="Password"
+                showHelpText={true}
               />
             </div>
             <p className="text-xs mt-4 mb-6">
