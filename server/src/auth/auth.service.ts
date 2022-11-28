@@ -47,10 +47,6 @@ export class AuthService {
     return await compare(plainText, hash);
   }
 
-  async verifyToken(token: string) {
-    return this.jwtService.verify(token);
-  }
-
   private getAuthPayload(authDocument: AuthDocument): AuthPayload {
     return {
       _id: authDocument._id.toString(),
@@ -109,6 +105,10 @@ export class AuthService {
       this.logger.error("Phone already exists");
       throw new PhoneAlreadyExists("Phone already exists");
     }
+  }
+
+  async verifyToken(token: string) {
+    return this.jwtService.verify(token);
   }
 
   async register(payload: RegisterDto): Promise<RegisterResponse> {
