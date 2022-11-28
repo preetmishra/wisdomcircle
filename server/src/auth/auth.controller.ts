@@ -21,7 +21,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post("/register")
-  async login(@Body() payload: RegisterDto) {
+  async register(@Body() payload: RegisterDto) {
     try {
       return await this.authService.register(payload);
     } catch (error) {
