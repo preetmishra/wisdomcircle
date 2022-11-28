@@ -3,6 +3,7 @@ import axios from "axios";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 
 import { API_URI } from "../../../common/constants";
@@ -47,6 +48,7 @@ export function VerificationContext({ children }) {
   const [showVerificationNotification, setVerificationNotification] =
     useState(true);
   const [hasSentVerification, setHasSentVerification] = useState(false);
+  const navigate = useNavigate();
 
   // If not logged in or already verified, let them access the application.
   if (!_isLoggedIn || _isVerified) {
@@ -63,6 +65,7 @@ export function VerificationContext({ children }) {
       .then((res) => res.data)
       .then((data) => {
         dispatch(loginUser(data));
+        navigate("/");
       })
       .catch(console.error); // TODO: Handle all error states.
   };

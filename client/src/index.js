@@ -9,15 +9,25 @@ import {
   AuthenticationContext,
   VerificationContext,
 } from "./components/auth/contexts";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
     <React.StrictMode>
       <AuthenticationContext>
-        <VerificationContext>
-          <App />
-        </VerificationContext>
+        <Router>
+          <Routes>
+            <Route
+              path="*"
+              element={
+                <VerificationContext>
+                  <App />
+                </VerificationContext>
+              }
+            ></Route>
+          </Routes>
+        </Router>
       </AuthenticationContext>
     </React.StrictMode>
   </Provider>
