@@ -6,6 +6,12 @@ export type AuthUserPayload = {
   lastName: string;
   isPhoneVerified: boolean;
   isEmailVerified: boolean;
+  token?: string;
+};
+
+export type AccessTokenResponse = {
+  accessToken: string;
+  user: AuthUserPayload;
 };
 
 export type LoginRegisterResponse = {

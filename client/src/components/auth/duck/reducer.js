@@ -1,15 +1,25 @@
-import { LOGIN_USER, LOGOUT_USER } from "./types";
+import {
+  GET_ACCESS_TOKEN_FROM_REFRESH_TOKEN,
+  LOGIN_USER,
+  LOGOUT_USER,
+} from "./types";
 
 const INITIAL_STATE = {
-  accessToken: localStorage.getItem("accessToken"),
   refreshToken: localStorage.getItem("refreshToken"),
-  user: JSON.parse(localStorage.getItem("user") || null),
+  accessToken: null,
+  user: null,
 };
 
 const reducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case LOGIN_USER:
       return {
+        ...action.payload,
+      };
+
+    case GET_ACCESS_TOKEN_FROM_REFRESH_TOKEN:
+      return {
+        ...state,
         ...action.payload,
       };
 

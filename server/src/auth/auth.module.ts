@@ -7,6 +7,7 @@ import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { Auth, AuthSchema } from "./schemas/auth.schema";
 import { NotificationModule } from "src/notification/notification.module";
+import { InviteModule } from "src/invite/invite.module";
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { NotificationModule } from "src/notification/notification.module";
       inject: [ConfigService],
     }),
     NotificationModule,
+    InviteModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],

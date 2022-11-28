@@ -5,6 +5,7 @@ import VisibleOff from "../../assets/icons/VisibleOff";
 
 export const Password = forwardRef((props, ref) => {
   const [shouldShowPassword, setShouldShowPassword] = useState(false);
+  const { showHelpText = false } = props;
 
   return (
     <div>
@@ -23,7 +24,7 @@ export const Password = forwardRef((props, ref) => {
           {shouldShowPassword ? <VisibleOff /> : <Visible />}
         </button>
       </div>
-      {props.showHelpText && (
+      {showHelpText && (
         <p className="text-xs text-neutral-grey mt-1.5">
           Password must be at least 8 characters
         </p>

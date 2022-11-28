@@ -7,3 +7,13 @@ export function isLoggedIn(state) {
 
   return false;
 }
+
+export function isVerified(state) {
+  const user = state.auth.user;
+
+  if (!user) {
+    return false;
+  }
+
+  return user.isEmailVerified && user.isPhoneVerified;
+}
