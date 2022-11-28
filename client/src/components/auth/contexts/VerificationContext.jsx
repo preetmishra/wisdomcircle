@@ -1,5 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import * as yup from "yup";
@@ -9,6 +10,7 @@ import Button from "../../lib/Button";
 import Input from "../../lib/Input";
 import { loginUser, logoutUser } from "../duck/actions";
 import { isLoggedIn, isVerified } from "../duck/functions";
+import VerificationNotificationModal from "../VerificationNotificationModal";
 import WelcomeScreen from "../WelcomeScreen";
 
 const getGreeting = (state) => {
@@ -42,6 +44,8 @@ export function VerificationContext({ children }) {
   const _isLoggedIn = useSelector(isLoggedIn);
   const _isVerified = useSelector(isVerified);
   const accessToken = useSelector((state) => state.auth.accessToken);
+  const [showVerificationNotification, setVerificationNotification] =
+    useState(true);
 
   // If not logged in or already verified, let them access the application.
   if (!_isLoggedIn || _isVerified) {
@@ -100,6 +104,14 @@ export function VerificationContext({ children }) {
           </form>
         </div>
       </div>
+      <VerificationNotificationModal
+        {...{
+          shouldShow: showVerificationNotification,
+          onClose: () => {
+            setVerificationNotification(false);
+          },
+        }}
+      />
     </div>
   );
 }

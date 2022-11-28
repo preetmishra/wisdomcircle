@@ -4,7 +4,7 @@ import * as yup from "yup";
 import "react-phone-number-input/style.css";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import WelcomeScreen from "../WelcomeScreen";
@@ -43,7 +43,6 @@ export function Register() {
   });
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const handleOnSubmit = (payload) => {
     axios
@@ -51,7 +50,6 @@ export function Register() {
       .then((res) => res.data)
       .then((data) => {
         dispatch(loginUser(data));
-        navigate("/");
       })
       .catch(console.error); // TODO: Handle all error states.
   };

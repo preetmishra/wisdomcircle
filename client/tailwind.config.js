@@ -14,6 +14,7 @@ module.exports = {
           black: "#121317",
           divider: "#DCDEE5",
           charcoal: "#606880",
+          light: "#F7F7F7",
         },
         accent: {
           "royal-blue": {
