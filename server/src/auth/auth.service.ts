@@ -3,6 +3,7 @@ import { JwtService } from "@nestjs/jwt";
 import { InjectModel } from "@nestjs/mongoose";
 import { compare, hash } from "bcrypt";
 import { Model } from "mongoose";
+import { NotificationService } from "src/notification/notification.service";
 import { LoginDto } from "./dto/login.dto";
 
 import { RegisterDto } from "./dto/register.dto";
@@ -26,6 +27,7 @@ export class AuthService {
 
   constructor(
     @InjectModel(Auth.name) private authModel: Model<AuthDocument>,
+    private readonly notificationService: NotificationService,
     private readonly jwtService: JwtService
   ) {}
 

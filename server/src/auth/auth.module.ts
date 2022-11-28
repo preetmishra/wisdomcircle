@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from "@nestjs/config";
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { Auth, AuthSchema } from "./schemas/auth.schema";
+import { NotificationModule } from "src/notification/notification.module";
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { Auth, AuthSchema } from "./schemas/auth.schema";
       }),
       inject: [ConfigService],
     }),
+    NotificationModule,
   ],
   controllers: [AuthController],
   providers: [AuthService],
