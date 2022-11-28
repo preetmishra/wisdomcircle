@@ -187,6 +187,15 @@ export class AuthService {
     this.logger.verbose(
       `Generated a verification SMS invitation <_id: ${invite._id}> for user <_id: ${authDocument._id}>`
     );
+
+    this.logger.verbose("Sending a verification SMS");
+
+    await this.notificationService.sendSMS(
+      `Please verify your WisdomCircle account. Code: ${invite.code}. This will be valid for 3 days.`,
+      authDocument.phone
+    );
+
+    this.logger.verbose("Sent a verification SMS successfully");
   }
 
   private async sendVerificationEmail(authDocument: AuthDocument) {
@@ -199,6 +208,16 @@ export class AuthService {
     this.logger.verbose(
       `Generated a verification email invitation <_id: ${invite._id}> for user <_id: ${authDocument._id}>`
     );
+
+    this.logger.verbose("Sending a verification email");
+
+    await this.notificationService.sendEmail({
+      to: authDocument.email,
+      text: `Please verify your WisdomCircle account. Code: ${invite.code}. This will be valid for 3 days.`,
+      subject: "WisdomCircle Account Verification",
+    });
+
+    this.logger.verbose("Sent a verification email successfully");
   }
 
   async verifyToken(token: string) {
