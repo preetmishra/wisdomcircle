@@ -1,5 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import axios from "axios";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { isValidPhoneNumber } from "react-phone-number-input";
 import { useDispatch } from "react-redux";
@@ -7,6 +8,11 @@ import { Link, useNavigate } from "react-router-dom";
 import * as yup from "yup";
 
 import { API_URI } from "../../../common/constants";
+import {
+  ERROR_CODE_AUTH_LOGIN_1,
+  ERROR_CODE_AUTH_LOGIN_2,
+  ERROR_CODE_AUTH_LOGIN_3,
+} from "../../../common/errors";
 import Button from "../../lib/Button";
 import Input, { Password } from "../../lib/Input";
 import { loginUser } from "../duck/actions";
@@ -39,6 +45,7 @@ export function Login() {
   const {
     register,
     handleSubmit,
+    setError,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(loginSchema),
@@ -46,6 +53,7 @@ export function Login() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [apiError, setApiError] = useState(null);
 
   const handleOnSubmit = (payload) => {
     axios
@@ -55,7 +63,32 @@ export function Login() {
         dispatch(loginUser(data));
         navigate("/");
       })
-      .catch(console.error); // TODO: Handle all error states.
+      .catch((error) => {
+        const code = error.response.data.code;
+
+        if (code && code === ERROR_CODE_AUTH_LOGIN_1) {
+          setError("emailOrPhone", {
+            type: "API",
+            message: "Sorry! The email is not registered.",
+          });
+        } else if (code && code === ERROR_CODE_AUTH_LOGIN_2) {
+          setError("emailOrPhone", {
+            type: "API",
+            message: "Sorry! The mobile number is not registered.",
+          });
+        } else if (code && code === ERROR_CODE_AUTH_LOGIN_3) {
+          setError("password", {
+            type: "API",
+            message: "Sorry! Password entered is incorrect.",
+          });
+        } else {
+          setApiError(
+            "An unexpected error has occurred. Please try again later."
+          );
+          // Hide the error automatically.
+          setTimeout(() => setApiError(null), 3000);
+        }
+      });
   };
 
   return (
@@ -90,6 +123,9 @@ export function Login() {
                 placeholder="Password"
               />
             </div>
+            {apiError && (
+              <p className="text-system-danger-4 my-4 text-sm">{apiError}</p>
+            )}
             <div className="mt-6">
               <Button type="submit">Sign In</Button>
             </div>

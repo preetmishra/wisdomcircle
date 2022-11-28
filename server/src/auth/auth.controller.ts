@@ -2,11 +2,10 @@ import {
   Controller,
   Post,
   Body,
-  BadRequestException,
   Get,
   UseGuards,
   HttpCode,
-  UnauthorizedException,
+  HttpException,
 } from "@nestjs/common";
 
 import { AuthService } from "./auth.service";
@@ -15,18 +14,7 @@ import { GetAccessTokenFromRefreshTokenDto } from "./dto/get-access-token-from-r
 import { LoginDto } from "./dto/login.dto";
 import { RegisterDto } from "./dto/register.dto";
 import { VerifyDto } from "./dto/verify.dto";
-import {
-  EmailAlreadyExists,
-  EmailAndPhoneAlreadyExists,
-  EmailIsNotRegistered,
-  InvalidEmailVerificationCode,
-  InvalidPhoneVerificationCode,
-  InvalidRefreshToken,
-  PasswordIsIncorrect,
-  PhoneAlreadyExists,
-  PhoneIsNotRegistered,
-  UserIdDoesNotExist,
-} from "./errors";
+import { GenericServerError } from "./errors";
 import { UnverifiedJWTAuth, VerifiedJWTAuth } from "./guards";
 import {
   AccessTokenResponse,
@@ -43,15 +31,15 @@ export class AuthController {
     try {
       return await this.authService.register(payload);
     } catch (error) {
-      if (
-        error instanceof EmailAlreadyExists ||
-        error instanceof PhoneAlreadyExists ||
-        error instanceof EmailAndPhoneAlreadyExists
-      ) {
-        throw new BadRequestException(error.message);
-      } else {
-        throw error;
+      if (!(error instanceof GenericServerError)) {
+        console.error(error);
+        error = new GenericServerError();
       }
+
+      throw new HttpException(
+        error.getResponseBody(),
+        error.getResponseStatus()
+      );
     }
   }
 
@@ -61,15 +49,15 @@ export class AuthController {
     try {
       return await this.authService.login(payload);
     } catch (error) {
-      if (
-        error instanceof EmailIsNotRegistered ||
-        error instanceof PhoneIsNotRegistered ||
-        error instanceof PasswordIsIncorrect
-      ) {
-        throw new BadRequestException(error.message);
-      } else {
-        throw error;
+      if (!(error instanceof GenericServerError)) {
+        console.error(error);
+        error = new GenericServerError();
       }
+
+      throw new HttpException(
+        error.getResponseBody(),
+        error.getResponseStatus()
+      );
     }
   }
 
@@ -81,11 +69,15 @@ export class AuthController {
     try {
       return await this.authService.getAccessTokenFromRefreshToken(payload);
     } catch (error) {
-      if (error instanceof InvalidRefreshToken) {
-        throw new UnauthorizedException(error.message);
-      } else {
-        throw error;
+      if (!(error instanceof GenericServerError)) {
+        console.error(error);
+        error = new GenericServerError();
       }
+
+      throw new HttpException(
+        error.getResponseBody(),
+        error.getResponseStatus()
+      );
     }
   }
 
@@ -99,14 +91,15 @@ export class AuthController {
     try {
       return await this.authService.verify(payload, user._id);
     } catch (error) {
-      if (
-        error instanceof InvalidEmailVerificationCode ||
-        error instanceof InvalidPhoneVerificationCode
-      ) {
-        throw new BadRequestException(error.message);
-      } else {
-        throw error;
+      if (!(error instanceof GenericServerError)) {
+        console.error(error);
+        error = new GenericServerError();
       }
+
+      throw new HttpException(
+        error.getResponseBody(),
+        error.getResponseStatus()
+      );
     }
   }
 
@@ -116,11 +109,15 @@ export class AuthController {
     try {
       return await this.authService.sendVerificationNotification(user._id);
     } catch (error) {
-      if (error instanceof UserIdDoesNotExist) {
-        throw new BadRequestException(error.message);
-      } else {
-        throw Error;
+      if (!(error instanceof GenericServerError)) {
+        console.error(error);
+        error = new GenericServerError();
       }
+
+      throw new HttpException(
+        error.getResponseBody(),
+        error.getResponseStatus()
+      );
     }
   }
 

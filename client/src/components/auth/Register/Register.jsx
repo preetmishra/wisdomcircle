@@ -12,6 +12,12 @@ import Input, { Phone, Password } from "../../lib/Input";
 import Button from "../../lib/Button";
 import { API_URI } from "../../../common/constants";
 import { loginUser } from "../duck/actions";
+import { useState } from "react";
+import {
+  ERROR_CODE_AUTH_REG_1,
+  ERROR_CODE_AUTH_REG_2,
+  ERROR_CODE_AUTH_REG_3,
+} from "../../../common/errors";
 
 const registerSchema = yup
   .object({
@@ -35,6 +41,7 @@ const registerSchema = yup
 export function Register() {
   const {
     register,
+    setError,
     control,
     handleSubmit,
     formState: { errors },
@@ -44,6 +51,7 @@ export function Register() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [apiError, setApiError] = useState(null);
 
   const handleOnSubmit = (payload) => {
     axios
@@ -53,7 +61,36 @@ export function Register() {
         dispatch(loginUser(data));
         navigate("/");
       })
-      .catch(console.error); // TODO: Handle all error states.
+      .catch((error) => {
+        const code = error.response.data.code;
+
+        if (code && code === ERROR_CODE_AUTH_REG_1) {
+          setError("email", {
+            type: "API",
+            message: "Sorry! The email is already registered.",
+          });
+        } else if (code && code === ERROR_CODE_AUTH_REG_2) {
+          setError("phone", {
+            type: "API",
+            message: "Sorry! The mobile number is already registered.",
+          });
+        } else if (code && code === ERROR_CODE_AUTH_REG_3) {
+          setError("email", {
+            type: "API",
+            message: "Sorry! The email is already registered.",
+          });
+          setError("phone", {
+            type: "API",
+            message: "Sorry! The mobile number is already registered.",
+          });
+        } else {
+          setApiError(
+            "An unexpected error has occurred. Please try again later."
+          );
+          // Hide the error automatically.
+          setTimeout(() => setApiError(null), 3000);
+        }
+      });
   };
 
   return (
@@ -107,6 +144,9 @@ export function Register() {
               and{" "}
               <span className="text-accent-royal-blue-4">Privacy Notice</span>
             </p>
+            {apiError && (
+              <p className="text-system-danger-4 my-4 text-sm">{apiError}</p>
+            )}
             <Button type="submit">Sign Up</Button>
           </form>
         </div>

@@ -7,6 +7,10 @@ import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 
 import { API_URI } from "../../../common/constants";
+import {
+  ERROR_CODE_AUTH_VERIFY_1,
+  ERROR_CODE_AUTH_VERIFY_2,
+} from "../../../common/errors";
 import Button from "../../lib/Button";
 import Input from "../../lib/Input";
 import { loginUser, logoutUser } from "../duck/actions";
@@ -34,6 +38,7 @@ const verificationSchema = yup
 export function VerificationContext({ children }) {
   const {
     register,
+    setError,
     handleSubmit,
     formState: { errors },
   } = useForm({
@@ -48,6 +53,7 @@ export function VerificationContext({ children }) {
   const [showVerificationNotification, setVerificationNotification] =
     useState(true);
   const [hasSentVerification, setHasSentVerification] = useState(false);
+  const [apiError, setApiError] = useState(null);
   const navigate = useNavigate();
 
   // If not logged in or already verified, let them access the application.
@@ -67,7 +73,29 @@ export function VerificationContext({ children }) {
         dispatch(loginUser(data));
         navigate("/");
       })
-      .catch(console.error); // TODO: Handle all error states.
+      .catch((error) => {
+        const code = error.response.data.code;
+
+        if (code && code === ERROR_CODE_AUTH_VERIFY_1) {
+          setError("emailVerificationCode", {
+            type: "API",
+            message:
+              "Sorry! The email verification code is either invalid or expired.",
+          });
+        } else if (code && code === ERROR_CODE_AUTH_VERIFY_2) {
+          setError("phoneVerificationCode", {
+            type: "API",
+            message:
+              "Sorry! The phone verification code is either invalid or expired.",
+          });
+        } else {
+          setApiError(
+            "An unexpected error has occurred. Please try again later."
+          );
+          // Hide the error automatically.
+          setTimeout(() => setApiError(null), 3000);
+        }
+      });
   };
 
   const handleResendVerificationNotification = () => {
@@ -89,7 +117,14 @@ export function VerificationContext({ children }) {
           throw new Error("Couldn't send verification notifications");
         }
       })
-      .catch(console.error); // TODO: Handle all error states.
+      .catch((error) => {
+        console.error(error);
+        setApiError(
+          "Could not send verification email and SMS. An unexpected error has occurred. Please try again later."
+        );
+        // Hide the error automatically.
+        setTimeout(() => setApiError(null), 3000);
+      });
   };
 
   return (
@@ -141,6 +176,9 @@ export function VerificationContext({ children }) {
                   : "Resend"}
               </button>
             </p>
+            {apiError && (
+              <p className="text-system-danger-4 my-4 text-sm">{apiError}</p>
+            )}
             <div className="mt-6">
               <Button type="submit">Verify</Button>
             </div>

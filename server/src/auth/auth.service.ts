@@ -133,13 +133,13 @@ export class AuthService {
 
     if (exists.email === email && exists.phone === phone) {
       this.logger.error("Email and phone already exists");
-      throw new EmailAndPhoneAlreadyExists("Email and phone already exists");
+      throw new EmailAndPhoneAlreadyExists();
     } else if (exists.email === email) {
       this.logger.error("Email already exists");
-      throw new EmailAlreadyExists("Email already exists");
+      throw new EmailAlreadyExists();
     } else {
       this.logger.error("Phone already exists");
-      throw new PhoneAlreadyExists("Phone already exists");
+      throw new PhoneAlreadyExists();
     }
   }
 
@@ -292,13 +292,9 @@ export class AuthService {
       );
 
       if (isEmailOrPhone.isEmail) {
-        throw new EmailIsNotRegistered(
-          "Could not login. Email is not registered"
-        );
+        throw new EmailIsNotRegistered();
       } else {
-        throw new PhoneIsNotRegistered(
-          "Could not login. Phone is not registered"
-        );
+        throw new PhoneIsNotRegistered();
       }
     }
 
@@ -314,7 +310,7 @@ export class AuthService {
 
     if (!isPasswordCorrect) {
       this.logger.error("Password is incorrect");
-      throw new PasswordIsIncorrect("Could not login. Password is incorrect");
+      throw new PasswordIsIncorrect();
     }
     this.logger.verbose("Password is correct");
 
@@ -343,7 +339,7 @@ export class AuthService {
 
       if (tokenPayload.token !== "refresh") {
         this.logger.error("Refresh token is invalid");
-        throw new InvalidRefreshToken("Refresh token is invalid");
+        throw new InvalidRefreshToken();
       }
 
       this.logger.verbose("Refresh token has been verified successfully");
@@ -355,9 +351,7 @@ export class AuthService {
         this.logger.error(
           `Could not find an associated user for the token <token: ${payload.refreshToken}>`
         );
-        throw new InvalidRefreshToken(
-          "Could not find an associated user for the token"
-        );
+        throw new InvalidRefreshToken();
       }
 
       this.logger.verbose(
@@ -397,9 +391,7 @@ export class AuthService {
 
     if (!emailInviteDocument) {
       this.logger.error("Email verification code is either invalid or expired");
-      throw new InvalidEmailVerificationCode(
-        "Email verification code is either invalid or expired"
-      );
+      throw new InvalidEmailVerificationCode();
     }
 
     this.logger.verbose(
@@ -414,9 +406,7 @@ export class AuthService {
 
     if (!phoneInviteDocument) {
       this.logger.error("Phone verification code is either invalid or expired");
-      throw new InvalidPhoneVerificationCode(
-        "Phone verification code is either invalid or expired"
-      );
+      throw new InvalidPhoneVerificationCode();
     }
 
     this.logger.verbose(
@@ -467,9 +457,7 @@ export class AuthService {
 
     if (!authDocument) {
       this.logger.error("Could not find any user for the given userId");
-      throw new UserIdDoesNotExist(
-        "Could not find any user for the given userId"
-      );
+      throw new UserIdDoesNotExist();
     }
 
     this.logger.verbose(
