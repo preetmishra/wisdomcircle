@@ -13,6 +13,7 @@ import {
   ERROR_CODE_AUTH_LOGIN_2,
   ERROR_CODE_AUTH_LOGIN_3,
 } from "../../../common/errors";
+import LogoWithType from "../../assets/LogoWithType";
 import Button from "../../lib/Button";
 import Input, { Password } from "../../lib/Input";
 import { loginUser } from "../duck/actions";
@@ -94,42 +95,53 @@ export function Login() {
   return (
     <div className="h-full flex flex-row w-full">
       <WelcomeScreen />
-      <div className="h-full bg-white basis-full md:basis-3/5 flex flex-col items-center justify-center">
-        <div className="w-full md:w-4/5 lg:w-3/5 xl:w-1/2 px-6 sm:px-8 md:px-0 space-y-6">
-          <header className="space-y-1">
-            <h1 className="font-bold text-2xl text-neutral-black">
-              Sign In to WisdomCircle
-            </h1>
-            <h2 className="text-neutral-grey">
-              Don't have an account?{" "}
-              <Link
-                to="/register"
-                className="text-accent-royal-blue-4 font-semibold"
-              >
-                Sign Up
-              </Link>
-            </h2>
-          </header>
-          <form onSubmit={handleSubmit(handleOnSubmit)}>
-            <div className="space-y-4">
-              <Input
-                {...register("emailOrPhone")}
-                error={errors?.emailOrPhone}
-                placeholder="Email or Mobile Number"
-              />
-              <Password
-                {...register("password")}
-                error={errors?.password}
-                placeholder="Password"
-              />
-            </div>
-            {apiError && (
-              <p className="text-system-danger-4 my-4 text-sm">{apiError}</p>
-            )}
-            <div className="mt-6">
-              <Button type="submit">Sign In</Button>
-            </div>
-          </form>
+      <div className="h-full bg-white basis-full md:basis-3/5 flex flex-col items-center justify-between md:justify-center">
+        <div className="w-full h-full md:w-4/5 lg:w-3/5 xl:w-1/2 px-5 py-8 md:py-0 sm:px-8 md:px-0 flex flex-col justify-between md:justify-center">
+          <div className="space-y-6">
+            <header className="space-y-10">
+              <div className="w-full flex md:hidden items-center justify-center">
+                <LogoWithType className="w-1/2" />
+              </div>
+              <div className="space-y-1">
+                <h1 className="font-bold text-xl md:text-2xl text-neutral-black">
+                  Sign In to WisdomCircle
+                </h1>
+                <h2 className="text-neutral-grey text-sm md:text-base">
+                  Don't have an account?{" "}
+                  <Link
+                    to="/register"
+                    className="text-accent-royal-blue-4 font-semibold"
+                  >
+                    Sign Up
+                  </Link>
+                </h2>
+              </div>
+            </header>
+            <form onSubmit={handleSubmit(handleOnSubmit)} id="login-form">
+              <div className="space-y-4">
+                <Input
+                  {...register("emailOrPhone")}
+                  error={errors?.emailOrPhone}
+                  placeholder="Email or Mobile Number"
+                />
+                <Password
+                  {...register("password")}
+                  error={errors?.password}
+                  placeholder="Password"
+                />
+              </div>
+              {apiError && (
+                <p className="text-system-danger-4 my-4 text-xs md:text-sm">
+                  {apiError}
+                </p>
+              )}
+            </form>
+          </div>
+          <div className="mt-6">
+            <Button type="submit" form="login-form">
+              Sign In
+            </Button>
+          </div>
         </div>
       </div>
     </div>

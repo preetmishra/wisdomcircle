@@ -18,6 +18,7 @@ import {
   ERROR_CODE_AUTH_REG_2,
   ERROR_CODE_AUTH_REG_3,
 } from "../../../common/errors";
+import LogoWithType from "../../assets/LogoWithType";
 
 const registerSchema = yup
   .object({
@@ -96,59 +97,72 @@ export function Register() {
   return (
     <div className="h-full flex flex-row w-full">
       <WelcomeScreen />
-      <div className="h-full bg-white basis-full md:basis-3/5 flex flex-col items-center justify-center">
-        <div className="w-full md:w-4/5 lg:w-3/5 xl:w-1/2 px-6 sm:px-8 md:px-0 space-y-6">
-          <header className="space-y-1">
-            <h1 className="font-bold text-2xl text-neutral-black">
-              Create an account
-            </h1>
-            <h2 className="text-neutral-grey">
-              Already have an account?{" "}
-              <Link
-                to="/login"
-                className="text-accent-royal-blue-4 font-semibold"
-              >
-                Sign In
-              </Link>
-            </h2>
-          </header>
-          <form onSubmit={handleSubmit(handleOnSubmit)}>
-            <div className="space-y-4">
-              <Input
-                {...register("firstName")}
-                error={errors?.firstName}
-                placeholder="First Name"
-              />
-              <Input
-                {...register("lastName")}
-                error={errors?.lastName}
-                placeholder="Last Name"
-              />
-              <Input
-                {...register("email")}
-                error={errors?.email}
-                placeholder="Email Address"
-              />
-              <Phone name="phone" control={control} error={errors?.phone} />
-              <Password
-                {...register("password")}
-                error={errors?.password}
-                placeholder="Password"
-                showHelpText={true}
-              />
-            </div>
-            <p className="text-xs mt-4 mb-6">
-              By clicking Sign Up you are indicating that you have read and
-              acknowledged the{" "}
-              <span className="text-accent-royal-blue-4">Terms of Service</span>{" "}
-              and{" "}
-              <span className="text-accent-royal-blue-4">Privacy Notice</span>
-            </p>
-            {apiError && (
-              <p className="text-system-danger-4 my-4 text-sm">{apiError}</p>
-            )}
-            <Button type="submit">Sign Up</Button>
-          </form>
+      <div className="h-full bg-white basis-full md:basis-3/5 flex flex-col items-center justify-between md:justify-center">
+        <div className="w-full h-full md:w-4/5 lg:w-3/5 xl:w-1/2 px-5 py-8 md:py-0 sm:px-8 md:px-0 flex flex-col justify-between md:justify-center">
+          <div className="space-y-6">
+            <header className="space-y-10">
+              <div className="w-full flex md:hidden items-center justify-center">
+                <LogoWithType className="w-1/2" />
+              </div>
+              <div className="space-y-1">
+                <h1 className="font-bold text-xl md:text-2xl text-neutral-black">
+                  Create an account
+                </h1>
+                <h2 className="text-neutral-grey text-sm md:text-base">
+                  Already have an account?{" "}
+                  <Link
+                    to="/login"
+                    className="text-accent-royal-blue-4 font-semibold"
+                  >
+                    Sign In
+                  </Link>
+                </h2>
+              </div>
+            </header>
+            <form onSubmit={handleSubmit(handleOnSubmit)} id="register-form">
+              <div className="space-y-4">
+                <Input
+                  {...register("firstName")}
+                  error={errors?.firstName}
+                  placeholder="First Name"
+                />
+                <Input
+                  {...register("lastName")}
+                  error={errors?.lastName}
+                  placeholder="Last Name"
+                />
+                <Input
+                  {...register("email")}
+                  error={errors?.email}
+                  placeholder="Email Address"
+                />
+                <Phone name="phone" control={control} error={errors?.phone} />
+                <Password
+                  {...register("password")}
+                  error={errors?.password}
+                  placeholder="Password"
+                  showHelpText={true}
+                />
+              </div>
+              <p className="text-xs mt-4 mb-6">
+                By clicking Sign Up you are indicating that you have read and
+                acknowledged the{" "}
+                <span className="text-accent-royal-blue-4">
+                  Terms of Service
+                </span>{" "}
+                and{" "}
+                <span className="text-accent-royal-blue-4">Privacy Notice</span>
+              </p>
+              {apiError && (
+                <p className="text-system-danger-4 my-4 text-sm">{apiError}</p>
+              )}
+            </form>
+          </div>
+          <div className="pb-8">
+            <Button type="submit" form="register-form">
+              Sign Up
+            </Button>
+          </div>
         </div>
       </div>
     </div>

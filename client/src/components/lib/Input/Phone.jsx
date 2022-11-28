@@ -26,7 +26,9 @@ export const Phone = (props) => {
         )}
       />
       {error && (
-        <p className="text-sm mt-1 text-system-danger-4">{error.message}</p>
+        <p className="text-xs md:text-sm mt-1 text-system-danger-4">
+          {error.message}
+        </p>
       )}
     </div>
   );

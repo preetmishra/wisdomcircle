@@ -1,11 +1,10 @@
 .PhoneInput {
   --PhoneInputCountryFlag-borderColor: transparent;
-  @apply h-12 flex justify-between
-    w-full space-x-2;
+  @apply h-10 md:h-12 flex justify-between w-full space-x-1 md:space-x-2;
 }
 
 .PhoneInputCountry {
-  @apply rounded p-4 border h-full text-neutral-black border-neutral-divider;
+  @apply rounded p-2 md:p-4 border text-neutral-black border-neutral-divider;
 }
 
 .PhoneInput--focus .PhoneInputCountry {

@@ -11,6 +11,7 @@ import {
   ERROR_CODE_AUTH_VERIFY_1,
   ERROR_CODE_AUTH_VERIFY_2,
 } from "../../../common/errors";
+import LogoWithType from "../../assets/LogoWithType";
 import Button from "../../lib/Button";
 import Input from "../../lib/Input";
 import { loginUser, logoutUser } from "../duck/actions";
@@ -130,59 +131,71 @@ export function VerificationContext({ children }) {
   return (
     <div className="h-full flex flex-row w-full">
       <WelcomeScreen />
-      <div className="h-full bg-white basis-full md:basis-3/5 flex flex-col items-center justify-center">
-        <div className="w-full md:w-4/5 lg:w-3/5 xl:w-1/2 px-6 sm:px-8 md:px-0 space-y-6">
-          <header className="space-y-1">
-            <h1 className="font-bold text-2xl text-neutral-black">
-              {greeting}. Verify your account
-            </h1>
-            <h2 className="text-neutral-grey">
-              Not you?{" "}
-              <button
-                className="text-accent-royal-blue-4 font-semibold"
-                onClick={() => dispatch(logoutUser())}
-              >
-                Logout
-              </button>
-            </h2>
-          </header>
-          <form onSubmit={handleSubmit(handleOnSubmit)}>
-            <div className="space-y-4">
-              <Input
-                {...register("emailVerificationCode")}
-                error={errors?.emailVerificationCode}
-                placeholder="Email Verification Code"
-              />
-              <Input
-                {...register("phoneVerificationCode")}
-                error={errors?.phoneVerificationCode}
-                placeholder="Phone Verification Code"
-              />
-            </div>
-            <p className="text-xs mt-4 mb-6">
-              <span>Didn't receive the verification code? </span>
-              <button
-                type="button"
-                className={`inline ${
-                  hasSentVerification
-                    ? "text-neutral-charcoal cursor-not-allowed"
-                    : "text-accent-royal-blue-4 cursor-pointer"
-                }`}
-                onClick={handleResendVerificationNotification}
-                disabled={hasSentVerification}
-              >
-                {hasSentVerification
-                  ? "Sent (wait for 60 seconds to resend)"
-                  : "Resend"}
-              </button>
-            </p>
-            {apiError && (
-              <p className="text-system-danger-4 my-4 text-sm">{apiError}</p>
-            )}
-            <div className="mt-6">
-              <Button type="submit">Verify</Button>
-            </div>
-          </form>
+      <div className="h-full bg-white basis-full md:basis-3/5 flex flex-col items-center justify-between md:justify-center">
+        <div className="w-full h-full md:w-4/5 lg:w-3/5 xl:w-1/2 px-5 py-8 md:py-0 sm:px-8 md:px-0 flex flex-col justify-between md:justify-center">
+          <div className="space-y-6">
+            <header className="space-y-10">
+              <div className="w-full flex md:hidden items-center justify-center">
+                <LogoWithType className="w-1/2" />
+              </div>
+              <div className="space-y-1">
+                <h1 className="font-bold text-xl md:text-2xl text-neutral-black">
+                  {greeting}. Verify your account
+                </h1>
+                <h2 className="text-neutral-grey text-sm md:text-base">
+                  Not you?{" "}
+                  <button
+                    className="text-accent-royal-blue-4 font-semibold"
+                    onClick={() => dispatch(logoutUser())}
+                  >
+                    Logout
+                  </button>
+                </h2>
+              </div>
+            </header>
+            <form
+              onSubmit={handleSubmit(handleOnSubmit)}
+              id="verification-form"
+            >
+              <div className="space-y-4">
+                <Input
+                  {...register("emailVerificationCode")}
+                  error={errors?.emailVerificationCode}
+                  placeholder="Email Verification Code"
+                />
+                <Input
+                  {...register("phoneVerificationCode")}
+                  error={errors?.phoneVerificationCode}
+                  placeholder="Phone Verification Code"
+                />
+              </div>
+              <p className="text-xs mt-4 mb-6">
+                <span>Didn't receive the verification code? </span>
+                <button
+                  type="button"
+                  className={`inline ${
+                    hasSentVerification
+                      ? "text-neutral-charcoal cursor-not-allowed"
+                      : "text-accent-royal-blue-4 cursor-pointer"
+                  }`}
+                  onClick={handleResendVerificationNotification}
+                  disabled={hasSentVerification}
+                >
+                  {hasSentVerification
+                    ? "Sent (wait for 60 seconds to resend)"
+                    : "Resend"}
+                </button>
+              </p>
+              {apiError && (
+                <p className="text-system-danger-4 my-4 text-sm">{apiError}</p>
+              )}
+            </form>
+          </div>
+          <div className="mt-6">
+            <Button type="submit" form="verification-form">
+              Verify
+            </Button>
+          </div>
         </div>
       </div>
       <VerificationNotificationModal
