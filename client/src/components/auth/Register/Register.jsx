@@ -53,8 +53,11 @@ export function Register() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [apiError, setApiError] = useState(null);
+  const [isApiLoading, setIsApiLoading] = useState(false);
 
   const handleOnSubmit = (payload) => {
+    setIsApiLoading(true);
+
     axios
       .post(`${API_URI}/auth/register`, payload)
       .then((res) => res.data)
@@ -91,6 +94,9 @@ export function Register() {
           // Hide the error automatically.
           setTimeout(() => setApiError(null), 3000);
         }
+      })
+      .finally(() => {
+        setIsApiLoading(false);
       });
   };
 
@@ -158,8 +164,8 @@ export function Register() {
               )}
             </form>
           </div>
-          <div className="pb-8">
-            <Button type="submit" form="register-form">
+          <div className="pb-4 md:pb-0">
+            <Button type="submit" form="register-form" isLoading={isApiLoading}>
               Sign Up
             </Button>
           </div>

@@ -55,6 +55,7 @@ export function VerificationContext({ children }) {
     useState(true);
   const [hasSentVerification, setHasSentVerification] = useState(false);
   const [apiError, setApiError] = useState(null);
+  const [isApiLoading, setIsApiLoading] = useState(false);
   const navigate = useNavigate();
 
   // If not logged in or already verified, let them access the application.
@@ -63,6 +64,8 @@ export function VerificationContext({ children }) {
   }
 
   const handleOnSubmit = (payload) => {
+    setApiError(true);
+
     axios
       .post(`${API_URI}/auth/verify`, payload, {
         headers: {
@@ -125,6 +128,9 @@ export function VerificationContext({ children }) {
         );
         // Hide the error automatically.
         setTimeout(() => setApiError(null), 3000);
+      })
+      .finally(() => {
+        setIsApiLoading(false);
       });
   };
 
@@ -192,7 +198,11 @@ export function VerificationContext({ children }) {
             </form>
           </div>
           <div className="mt-6">
-            <Button type="submit" form="verification-form">
+            <Button
+              type="submit"
+              form="verification-form"
+              isLoading={isApiLoading}
+            >
               Verify
             </Button>
           </div>

@@ -55,8 +55,11 @@ export function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [apiError, setApiError] = useState(null);
+  const [isApiLoading, setIsApiLoading] = useState(false);
 
   const handleOnSubmit = (payload) => {
+    setIsApiLoading(true);
+
     axios
       .post(`${API_URI}/auth/login`, payload)
       .then((res) => res.data)
@@ -89,6 +92,9 @@ export function Login() {
           // Hide the error automatically.
           setTimeout(() => setApiError(null), 3000);
         }
+      })
+      .finally(() => {
+        setIsApiLoading(false);
       });
   };
 
@@ -138,7 +144,7 @@ export function Login() {
             </form>
           </div>
           <div className="mt-6">
-            <Button type="submit" form="login-form">
+            <Button type="submit" form="login-form" isLoading={isApiLoading}>
               Sign In
             </Button>
           </div>
