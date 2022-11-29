@@ -9,7 +9,6 @@ services:
       - "29172:29172"
     volumes:
       - ./client:/app
-      - "/app/node_modules"
     depends_on:
       - wisdomcircle_server
     command: npm run start
@@ -24,7 +23,6 @@ services:
       - "${API_SERVER_PORT}:${API_SERVER_PORT}"
     volumes:
       - ./server:/app
-      - "/app/node_modules"
     depends_on:
       - mongo
     networks:
